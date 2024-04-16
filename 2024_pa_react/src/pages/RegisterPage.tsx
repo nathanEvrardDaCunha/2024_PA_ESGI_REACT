@@ -1,0 +1,1 @@
+// @ts-ignoreimport Navbar from "../components/NavBar.tsx";// @ts-ignoreimport ComposedBackground from "../components/ComposedBackground.tsx";// @ts-ignoreimport RegisterForm from "../components/RegisterForm.tsx";const RegisterPage = () => {	return (		<ComposedBackground>			<Navbar />			<RegisterForm />		</ComposedBackground>	);};export default RegisterPage;

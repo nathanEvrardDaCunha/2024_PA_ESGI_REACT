@@ -1,0 +1,1 @@
+// @ts-ignoreimport Navbar from "../components/NavBar.tsx";// @ts-ignoreimport ComposedBackground from "../components/ComposedBackground.tsx";const HomePage = () => {	return (		<ComposedBackground>			<Navbar></Navbar>		</ComposedBackground>	);};export default HomePage;
