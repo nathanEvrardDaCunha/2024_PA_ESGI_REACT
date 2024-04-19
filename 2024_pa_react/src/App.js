@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import DonationPage from "./pages/DonationPage.tsx";
 import MembershipPage from "./pages/MembershipPage.tsx";
+import UserInfoPage from "./pages/UserInfoPage.tsx";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/donation" element={<DonationPage />} />
             <Route path="/membership" element={<MembershipPage />} />
+            <Route path="/user/info" element={<UserInfoPage />} />
         </Routes>
       </Router>
   );
