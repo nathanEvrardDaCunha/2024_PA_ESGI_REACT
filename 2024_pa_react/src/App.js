@@ -11,6 +11,7 @@ import NotAuthorizedPage from "./pages/NotAuthorizedPage.tsx";
 import Cookies from "js-cookie";
 import TaskPage from "./pages/TaskPage.tsx";
 import ActivityPage from "./pages/ActivityPage.tsx";
+import DonationBeforePage from "./pages/DonationBeforePage.tsx";
 
 const PrivateRoute = ({ children }) => {
     const authToken = Cookies.get("authToken");
@@ -56,6 +57,14 @@ function App() {
                     element={
                         <PrivateRoute>
                             <ActivityPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/before-donation"
+                    element={
+                        <PrivateRoute>
+                            <DonationBeforePage />
                         </PrivateRoute>
                     }
                 />
