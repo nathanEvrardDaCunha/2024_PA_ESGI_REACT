@@ -11,6 +11,11 @@ import NotAuthorizedPage from "./pages/NotAuthorizedPage.tsx";
 import Cookies from "js-cookie";
 import TaskPage from "./pages/TaskPage.tsx";
 import ActivityPage from "./pages/ActivityPage.tsx";
+import TopicPage from "./pages/TopicPage.tsx";
+import GeneralAssemblyPage from "./pages/GeneralAssemblyPage.tsx";
+import GeneralAssemblyPeoplePage from "./pages/GeneralAssemblyPeoplePage.tsx";
+import LinkPeopleToAssemblyPage from "./components/LinkPeopleToAssemblyPage.tsx";
+import UserAssembliesPage from "./pages/UserAssembliesPage.tsx";
 
 const PrivateRoute = ({ children }) => {
     const authToken = Cookies.get("authToken");
@@ -26,7 +31,11 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/donation" element={<DonationPage />} />
                 <Route path="/membership" element={<MembershipPage />} />
+                <Route path="/assembly" element={<GeneralAssemblyPage />} />
+                <Route path="/assembly/people" element={<GeneralAssemblyPeoplePage />} />
                 <Route path="/not-authorized" element={<NotAuthorizedPage />} />
+                <Route path="/assemblies/:assemblyId/link-people" element={<LinkPeopleToAssemblyPage />} />
+                <Route path="/user-assemblies" element={<UserAssembliesPage />} />
                 <Route
                     path="/user/info"
                     element={
