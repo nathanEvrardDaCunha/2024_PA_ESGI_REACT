@@ -13,6 +13,7 @@ import TaskPage from "./pages/TaskPage.tsx";
 import ActivityPage from "./pages/ActivityPage.tsx";
 import DonationBeforePage from "./pages/DonationBeforePage.tsx";
 import MembershipBeforePage from "./pages/MembershipBeforePage.tsx";
+import UserMembership from "./pages/UserMembership.tsx";
 
 const PrivateRoute = ({ children }) => {
     const authToken = Cookies.get("authToken");
@@ -74,6 +75,14 @@ function App() {
                     element={
                         <PrivateRoute>
                             <MembershipBeforePage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/user/membership"
+                    element={
+                        <PrivateRoute>
+                            <UserMembership />
                         </PrivateRoute>
                     }
                 />
