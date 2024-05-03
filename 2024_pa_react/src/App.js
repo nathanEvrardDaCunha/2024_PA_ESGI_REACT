@@ -11,6 +11,9 @@ import NotAuthorizedPage from "./pages/NotAuthorizedPage.tsx";
 import Cookies from "js-cookie";
 import TaskPage from "./pages/TaskPage.tsx";
 import ActivityPage from "./pages/ActivityPage.tsx";
+import DonationBeforePage from "./pages/DonationBeforePage.tsx";
+import MembershipBeforePage from "./pages/MembershipBeforePage.tsx";
+import UserMembership from "./pages/UserMembership.tsx";
 import TopicPage from "./pages/TopicPage.tsx";
 import GeneralAssemblyPage from "./pages/GeneralAssemblyPage.tsx";
 import GeneralAssemblyPeoplePage from "./pages/GeneralAssemblyPeoplePage.tsx";
@@ -65,6 +68,30 @@ function App() {
                     element={
                         <PrivateRoute>
                             <ActivityPage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/before-donation"
+                    element={
+                        <PrivateRoute>
+                            <DonationBeforePage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/before-membership"
+                    element={
+                        <PrivateRoute>
+                            <MembershipBeforePage />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/user/membership"
+                    element={
+                        <PrivateRoute>
+                            <UserMembership />
                         </PrivateRoute>
                     }
                 />
