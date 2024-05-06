@@ -17,6 +17,7 @@ import UserMembership from "./pages/UserMembership.tsx";
 import GeneralAssemblyPage from "./pages/GeneralAssemblyPage.tsx";
 import GeneralAssemblyPeoplePage from "./pages/GeneralAssemblyPeoplePage.tsx";
 import LinkPeopleToAssemblyPage from "./components/LinkPeopleToAssemblyPage.tsx";
+import RegisterLocationPage from "./pages/RegisterLocationPage.tsx";
 
 const PrivateRoute = ({ children }) => {
     const authToken = Cookies.get("authToken");
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/register-location" element={<RegisterLocationPage />} />
                 <Route path="/donation" element={<DonationPage />} />
                 <Route path="/membership" element={<MembershipPage />} />
                 <Route path="/assembly" element={<GeneralAssemblyPage />} />
