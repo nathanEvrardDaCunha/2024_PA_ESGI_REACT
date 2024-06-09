@@ -1,20 +1,52 @@
 // @ts-ignore
+import React from 'react';
+// @ts-ignore
 import Cookies from 'js-cookie';
-const AssemblyDetails = ({ assembly }) => {
-    const handleVote = async (topicId, choiceId) => {
+
+interface AssemblyDetailsProps {
+    assembly: {
+        id: string;
+        name: string;
+        topics: Topic[];
+    };
+}
+
+interface Topic {
+    id: string;
+    label: string;
+    choices: Choice[];
+}
+
+interface Choice {
+    id: string;
+    description: string;
+}
+
+const AssemblyDetails: React.FC<AssemblyDetailsProps> = ({ assembly }) => {
+    const handleVote = async (topicId: string, choiceId: string) => {
         const personId = Cookies.get('userId');
-        const response = await fetch(`http://localhost:3000/topics/${topicId}/vote`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ choiceId,personId }),
-        });
-        const data = await response.json();
-        if (response.ok) {
+        if (!personId) {
+            alert('User ID not found in cookies');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/topics/${topicId}/vote`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ choiceId, personId }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error);
+            }
+
             alert('Vote recorded!');
-        } else {
-            alert(`Failed to record vote: ${data.error}`);
+        } catch (error: any) {
+            alert(`Failed to record vote: ${error.message}`);
         }
     };
 

@@ -1,48 +1,27 @@
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 // @ts-ignore
-import TopicForm from './TopicForm.tsx';  // Assurez-vous d'avoir ce fichier
-
-interface Choice {
-    description: string;
-}
-
-interface Topic {
-    label: string;
-    description: string;
-    status: string;
-    isAnonyme: boolean;
-    modality: string;
-    choices: Choice[];
-}
-
-interface GeneralAssembly {
-    meetingDate: Date;
-    status: string;
-    outcome: string;
-    creationDate: Date; // S'assurer que cette propriété est présente
-    endingDate: Date;
-    topics: Topic[];
-    // autres champs selon besoin
-}
+import TopicForm from './TopicForm.tsx';
+// @ts-ignore
+import { GeneralAssembly, Topic } from './Types.tsx';
 
 const GeneralAssemblyForm: React.FC = () => {
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+    const [error, setError] = useState<string>("");
+    const [success, setSuccess] = useState<string>("");
     const [generalAssembly, setGeneralAssembly] = useState<GeneralAssembly>({
         meetingDate: new Date(),
         status: '',
         outcome: '',
-        creationDate: new Date(), // Initialiser creationDate à la date courante
+        creationDate: new Date(),
         endingDate: new Date(),
         topics: []
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setGeneralAssembly({ ...generalAssembly, [e.target.name]: e.target.value });
     };
 
     const addTopic = () => {
-        const newTopics = [...generalAssembly.topics, { label: '', description: '', status: '', isAnonyme: false, modality: '', choices: [] }];
+        const newTopics = [...generalAssembly.topics, { label: '', description: '', status: '', isAnonyme: false, modality: '', quorum: 0, totalRounds:1, choices: [] }];
         setGeneralAssembly({ ...generalAssembly, topics: newTopics });
     };
 
@@ -52,32 +31,32 @@ const GeneralAssemblyForm: React.FC = () => {
         setGeneralAssembly({ ...generalAssembly, topics: newTopics });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        fetch("http://localhost:3000/assemblies", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(generalAssembly),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    setSuccess("Assembly created successfully");
-                    console.log("Assembly created successfully");
+        console.log("Submitting assembly:", generalAssembly);
 
-                } else {
-                    setError("Failed to create Assembly");
-                    console.error("Failed to create Assembly");
-                }
-            })
-            .catch((error) => {
-                setError("Error during registration");
-                console.error("Error:", error);
+        try {
+            const response = await fetch("http://localhost:3000/assemblies", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(generalAssembly),
             });
-        console.log(generalAssembly);
-    };
 
+            if (!response.ok) {
+                const errorData = await response.json();
+                setError(`Failed to create Assembly: ${errorData.error}`);
+                console.error("Failed to create Assembly:", errorData);
+            } else {
+                setSuccess("Assembly created successfully");
+                console.log("Assembly created successfully");
+            }
+        } catch (error) {
+            setError("Error during registration");
+            console.error("Error:", error);
+        }
+    };
 
     return (
         <form onSubmit={handleSubmit}>
@@ -95,10 +74,12 @@ const GeneralAssemblyForm: React.FC = () => {
                 <textarea name="outcome" value={generalAssembly.outcome} onChange={handleInputChange} />
             </label>
             {generalAssembly.topics.map((topic, index) => (
-                <TopicForm key={index} topic={topic} onChange={topic => handleTopicChange(index, topic)} />
+                <TopicForm key={index} topic={topic} onChange={(updatedTopic) => handleTopicChange(index, updatedTopic)} />
             ))}
             <button type="button" onClick={addTopic}>Add Topic</button>
             <button type="submit">Submit</button>
+            {error && <div style={{ color: 'red' }}>{error}</div>}
+            {success && <div style={{ color: 'green' }}>{success}</div>}
         </form>
     );
 };

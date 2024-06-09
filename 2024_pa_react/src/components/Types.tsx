@@ -9,10 +9,20 @@ export interface Topic {
     status: string;
     isAnonyme: boolean;
     modality: string;
+    totalRounds: number;
     choices: Choice[];
+    quorum: number;
 }
 
 export interface TopicFormProps {
     topic: Topic;
     onChange: (updatedTopic: Topic) => void;
+}
+export interface GeneralAssembly {
+    meetingDate: Date;
+    status: string;
+    outcome: string;
+    creationDate: Date;
+    endingDate: Date;
+    topics: Topic[];
 }

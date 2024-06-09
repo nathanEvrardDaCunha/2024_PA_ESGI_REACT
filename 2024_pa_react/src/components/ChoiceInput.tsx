@@ -1,7 +1,6 @@
-
-import { Choice } from './Types';
 // @ts-ignore
 import React from "react";
+import { Choice } from "./Types";
 
 interface ChoiceInputProps {
     index: number;
