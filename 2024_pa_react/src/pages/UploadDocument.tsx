@@ -1,6 +1,7 @@
-// UploaderDocument.tsx
 import { useState } from 'react';
 import { BlobServiceClient } from '@azure/storage-blob';
+// @ts-ignore
+import Cookies from 'js-cookie';
 
 const UploadDocument: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -14,14 +15,17 @@ const UploadDocument: React.FC = () => {
   };
 
   const handleUpload = async () => {
+    console.log('REACT_APP_AZURE_SAS_URL:', process.env.REACT_APP_AZURE_SAS_URL);
     const sasUrl = process.env.REACT_APP_AZURE_SAS_URL!;
     const containerName = process.env.REACT_APP_AZURE_CONTAINER_NAME!;
+    const authorId = Cookies.get('userId');
+    const token = Cookies.get('authToken');
 
     console.log('SAS URL:', sasUrl);
     console.log('Container Name:', containerName);
 
-    if (!sasUrl || !containerName) {
-      console.error('Missing SAS URL or Container Name');
+    if (!sasUrl || !containerName || !authorId || !token) {
+      console.error('Missing SAS URL, Container Name, authorId, or token');
       return;
     }
 
@@ -41,24 +45,26 @@ const UploadDocument: React.FC = () => {
         console.log('File URL:', fileUrl);
 
         // Vérification de l'accès direct à l'URL du blob
+        /*
         const verifyResponse = await fetch(fileUrl, { method: 'HEAD' });
         if (verifyResponse.ok) {
           console.log('File successfully uploaded and accessible at:', fileUrl);
         } else {
           console.error('Uploaded file not accessible:', verifyResponse.statusText);
         }
-
+        */
         const response = await fetch('http://localhost:3000/documents', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'user-id': authorId!,
           },
           body: JSON.stringify({
             title,
             description,
             fileUrl,
-            authorFirstName: 'John',
-            authorLastName: 'Doe',
+            authorId
           }),
         });
 

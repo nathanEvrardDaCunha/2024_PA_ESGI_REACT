@@ -19,6 +19,13 @@ import GeneralAssemblyPeoplePage from "./pages/GeneralAssemblyPeoplePage.tsx";
 import LinkPeopleToAssemblyPage from "./components/LinkPeopleToAssemblyPage.tsx";
 import UserAssembliesPage from "./pages/UserAssembliesPage.tsx";
 import UploadDocument from "./pages/UploadDocument.tsx";
+import DocumentsPage from "./pages/DocumentsPage.tsx";
+import CreateGroupPage from "./pages/CreateGroupPage.tsx";
+import AssignDocumentPage from "./pages/AssignDocumentPage.tsx";
+import UserDocumentsPage from "./pages/UserDocumentsPage.tsx";
+import GeneralAssemblyForm from "./components/GeneralAssemblyForm.tsx";
+import VoteResults from "./components/VoteResults.tsx";
+import AssembliesList from "./pages/AssembliesList.tsx";
 
 const PrivateRoute = ({ children }) => {
     const authToken = Cookies.get("authToken");
@@ -33,9 +40,15 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/donation" element={<DonationPage />} />
-                <Route path="/document" element={<UploadDocument />} />
+                <Route path="/groups" element={<CreateGroupPage />} />
+                <Route path="/groups/document" element={<AssignDocumentPage />} />
+                <Route path="/document/upload" element={<UploadDocument />} />
+                <Route path="/document" element={<UserDocumentsPage />} />
                 <Route path="/membership" element={<MembershipPage />} />
-                <Route path="/assembly" element={<GeneralAssemblyPage />} />
+                <Route path="/assembly/list" element={<GeneralAssemblyPage />} />
+                <Route path="/assembly" element={<GeneralAssemblyForm />} />
+                <Route path="/assemblies/:assemblyId/results" element={<VoteResults />} />
+                <Route path="/assemblies" element={<AssembliesList/> }/>
                 <Route path="/assembly/people" element={<GeneralAssemblyPeoplePage />} />
                 <Route path="/not-authorized" element={<NotAuthorizedPage />} />
                 <Route path="/assemblies/:assemblyId/link-people" element={<LinkPeopleToAssemblyPage />} />

@@ -2,10 +2,27 @@ import { useState, useEffect } from 'react';
 // @ts-ignore
 import AssemblyDetails from '../components/AssemblyDetails.tsx';
 // @ts-ignore
-import Cookies from 'js-cookie';  // Utilisé pour récupérer l'ID de l'utilisateur des cookies
+import Cookies from 'js-cookie';
+
+interface Assembly {
+    id: string;
+    name: string;
+    topics: Topic[];
+}
+
+interface Topic {
+    id: string;
+    label: string;
+    choices: Choice[];
+}
+
+interface Choice {
+    id: string;
+    description: string;
+}
 
 const UserAssembliesPage = () => {
-    const [assemblies, setAssemblies] = useState([]);
+    const [assemblies, setAssemblies] = useState<Assembly[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -26,7 +43,7 @@ const UserAssembliesPage = () => {
                 }
                 const data = await response.json();
                 setAssemblies(data);
-            } catch (error) {
+            } catch (error: any) {
                 setError(error.message);
             } finally {
                 setLoading(false);
