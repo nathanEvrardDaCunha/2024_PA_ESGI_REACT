@@ -26,6 +26,7 @@ import UserDocumentsPage from "./pages/UserDocumentsPage.tsx";
 import GeneralAssemblyForm from "./components/GeneralAssemblyForm.tsx";
 import VoteResults from "./components/VoteResults.tsx";
 import AssembliesList from "./pages/AssembliesList.tsx";
+import AssemblyDetails from "./components/AssemblyDetails.tsx";
 
 const PrivateRoute = ({ children }) => {
     const authToken = Cookies.get("authToken");

@@ -8,17 +8,27 @@ interface Assembly {
     id: string;
     name: string;
     topics: Topic[];
+    person: Person[];
 }
 
 interface Topic {
     id: string;
     label: string;
     choices: Choice[];
+    currentRound: number;
+    totalRounds: number;
+    quorum: number;
 }
 
 interface Choice {
     id: string;
     description: string;
+    voteCount: number;
+    voters: Person[]; // Ajouter cette propriété pour afficher le nombre de votants
+}
+
+interface Person {
+    id: string;
 }
 
 const UserAssembliesPage = () => {
