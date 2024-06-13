@@ -65,7 +65,7 @@ const AssemblyDetails: React.FC<AssemblyDetailsProps> = ({ assembly }) => {
 
     const fetchTopics = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/assemblies/${assembly.id}/topics`);
+            const response = await fetch(`http://localhost:3000/assemblies/${assembly.id}/filtered-topics/`);
             const data = await response.json();
             console.log(data);
             setTopics(data.topics);
