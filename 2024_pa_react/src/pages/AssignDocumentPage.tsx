@@ -12,7 +12,6 @@ interface Document {
     id: string;
     title: string;
 }
-
 const AssignDocumentPage: React.FC = () => {
     const [groups, setGroups] = useState<Group[]>([]);
     const [documents, setDocuments] = useState<Document[]>([]);
@@ -77,6 +76,16 @@ const AssignDocumentPage: React.FC = () => {
             return;
         }
 
+        // Trouver le nom du groupe sélectionné pour définir le chemin (path)
+        const selectedGroupName = groups.find(group => group.id === selectedGroup)?.name;
+
+        if (!selectedGroupName) {
+            setMessage('Selected group not found.');
+            return;
+        }
+
+        const path = `/groupDocument/${selectedGroupName}`; // Définir le path à partir du nom du groupe
+
         try {
             const response = await fetch(`http://localhost:3000/groups/${selectedGroup}/documents`, {
                 method: 'POST',
@@ -85,7 +94,7 @@ const AssignDocumentPage: React.FC = () => {
                     'Authorization': `Bearer ${token}`,
                     'user-id': userId!,
                 },
-                body: JSON.stringify({ documentId: selectedDocument }),
+                body: JSON.stringify({ documentId: selectedDocument, path: path }),
             });
 
             if (!response.ok) {
