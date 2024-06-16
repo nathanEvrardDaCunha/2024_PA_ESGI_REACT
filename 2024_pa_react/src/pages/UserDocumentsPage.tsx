@@ -139,18 +139,20 @@ const UserDocumentsPage: React.FC = () => {
             let newPath;
             if ('title' in selectedItem) {
                 // Si selectedItem est un Document
-                newPath = `${targetFolder.path}/${selectedItem.title}`;
+                newPath = `${targetFolder.path}`;
                 const updatedDocuments = documents.map(doc =>
                     doc.id === selectedItem.id ? { ...doc, path: newPath } : doc
                 );
                 setDocuments(updatedDocuments);
+                console.log("id :"+selectedItem.id);
                 await updateDocumentPathInDatabase(selectedItem, newPath);
             } else {
                 // Si selectedItem est un Folder
+                console.log("path: " + targetFolder.path + "/" + selectedItem.name);
                 newPath = `${targetFolder.path}/${selectedItem.name}`;
                 const updatedFolders = moveFolder(folders, selectedItem.path, newPath);
                 setFolders(updatedFolders);
-                await updateFolderPathsInDatabase(selectedItem, newPath);
+                await updateFolderPathsInDatabase(selectedItem, newPath, selectedItem.path);
             }
             setSelectedItem(null);
             setTargetFolder(null);
@@ -183,6 +185,8 @@ const UserDocumentsPage: React.FC = () => {
     };
 
     const updateDocumentPathInDatabase = async (document: Document, newPath: string) => {
+        console.log("title :"+document.title);
+        console.log("id :"+document.id);
         try {
             await fetch(`http://localhost:3000/documents/${document.id}/path`, {
                 method: 'PATCH',
@@ -198,10 +202,11 @@ const UserDocumentsPage: React.FC = () => {
         }
     };
 
-    const updateFolderPathsInDatabase = async (folder: Folder, newPath: string) => {
-        const updatePathsRecursively = async (node: Folder | Document, currentPath: string) => {
+    const updateFolderPathsInDatabase = async (folder: Folder, newPath: string, oldPath: string) => {
+        const updatePathsRecursively = async (node: Folder | Document, currentPath: string, newBasePath: string) => {
             if ('title' in node) {
                 // Update document path
+                const newDocPath = node.path.replace(currentPath, newBasePath);
                 try {
                     await fetch(`http://localhost:3000/documents/${node.id}/path`, {
                         method: 'PATCH',
@@ -210,14 +215,14 @@ const UserDocumentsPage: React.FC = () => {
                             'Authorization': `Bearer ${token}`,
                             'user-id': userId!,
                         },
-                        body: JSON.stringify({ path: `${newPath}/${node.title}`, personId: userId }),
+                        body: JSON.stringify({ path: newDocPath, personId: userId }),
                     });
                 } catch (error: any) {
                     setError(error.message);
                 }
             } else {
                 // Update folder path and children paths
-                const updatedPath = node.path.replace(currentPath, newPath);
+                const updatedPath = node.path.replace(currentPath, newBasePath);
                 try {
                     await fetch(`http://localhost:3000/documents/folders/${encodeURIComponent(node.path)}`, {
                         method: 'PATCH',
@@ -232,15 +237,15 @@ const UserDocumentsPage: React.FC = () => {
                     setError(error.message);
                 }
                 for (const child of node.children) {
-                    await updatePathsRecursively(child, node.path);
+                    await updatePathsRecursively(child, node.path, updatedPath);
                 }
                 for (const doc of node.documents) {
-                    await updatePathsRecursively(doc, node.path);
+                    await updatePathsRecursively(doc, node.path, updatedPath);
                 }
             }
         };
 
-        await updatePathsRecursively(folder, folder.path);
+        await updatePathsRecursively(folder, oldPath, newPath);
     };
 
     const handleCreateFolder = (e: React.FormEvent) => {
