@@ -7,10 +7,16 @@ const UploadDocument: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [type, setFileType] = useState(''); // Nouvel état pour le type de fichier
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setFile(event.target.files[0]);
+      const selectedFile = event.target.files[0];
+      console.log('Selected file:', selectedFile); // Ajoute ce log
+      setFile(selectedFile);
+      const mimeType = selectedFile.type;
+      const extension = mimeType.split('/')[1]; // Récupérer l'extension du type MIME
+      setFileType(extension); // Définir l'extension du fichier
     }
   };
 
@@ -23,6 +29,7 @@ const UploadDocument: React.FC = () => {
 
     console.log('SAS URL:', sasUrl);
     console.log('Container Name:', containerName);
+    console.log('Selected file before upload:', file); // Ajoute ce log pour vérifier l'état du fichier
 
     if (!sasUrl || !containerName || !authorId || !token) {
       console.error('Missing SAS URL, Container Name, authorId, or token');
@@ -44,15 +51,6 @@ const UploadDocument: React.FC = () => {
 
         console.log('File URL:', fileUrl);
 
-        // Vérification de l'accès direct à l'URL du blob
-        /*
-        const verifyResponse = await fetch(fileUrl, { method: 'HEAD' });
-        if (verifyResponse.ok) {
-          console.log('File successfully uploaded and accessible at:', fileUrl);
-        } else {
-          console.error('Uploaded file not accessible:', verifyResponse.statusText);
-        }
-        */
         const response = await fetch('http://localhost:3000/documents', {
           method: 'POST',
           headers: {
@@ -64,18 +62,22 @@ const UploadDocument: React.FC = () => {
             title,
             description,
             fileUrl,
+            type,
             authorId
           }),
         });
 
         if (!response.ok) {
-          console.error('Failed to upload document metadata:', response.statusText);
+          const errorText = await response.text();
+          console.error('Failed to upload document metadata:', response.statusText, errorText);
         } else {
           console.log('Document metadata uploaded successfully');
         }
       } catch (error) {
         console.error('Error uploading file:', error);
       }
+    } else {
+      console.log('No file selected'); // Ajoute ce log pour le cas où le fichier n'est pas sélectionné
     }
   };
 
