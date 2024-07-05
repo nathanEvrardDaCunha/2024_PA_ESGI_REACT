@@ -1,56 +1,73 @@
-import { useState } from 'react';
+import * as React from "react";
+import {useEffect, useState} from "react";
 import { BlobServiceClient } from '@azure/storage-blob';
 // @ts-ignore
 import Cookies from 'js-cookie';
+// @ts-ignore
+import Navbar from "../components/NavBar.tsx";
+// @ts-ignore
+import ComposedBackground from "../components/ComposedBackground.tsx";
+// @ts-ignore
+import Footer from "../components/Footer.tsx";
+// @ts-ignore
+import SideBar from "../components/SideBar.tsx";
+
+const ToggleSidebarButton = ({ onClick, isOpen }) => (
+    <button
+        className={`bg-dark d-flex align-items-center ${isOpen ? 'active' : ''}`}
+        onClick={onClick}
+    >
+      <i className={`bi bi-list${isOpen ? 'bi-x' : ''}`}></i>
+      <span className={'text-light'}>X</span>
+    </button>
+);
 
 const UploadDocument: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [type, setFileType] = useState(''); // Nouvel état pour le type de fichier
-
+  const [type, setFileType] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const selectedFile = event.target.files[0];
-      console.log('Selected file:', selectedFile); // Ajoute ce log
       setFile(selectedFile);
       const mimeType = selectedFile.type;
-      const extension = mimeType.split('/')[1]; // Récupérer l'extension du type MIME
-      setFileType(extension); // Définir l'extension du fichier
+      const extension = mimeType.split('/')[1];
+      setFileType(extension);
     }
   };
-
+  
   const handleUpload = async () => {
-    console.log('REACT_APP_AZURE_SAS_URL:', process.env.REACT_APP_AZURE_SAS_URL);
+    setIsUploading(true);
+    setUploadSuccess(false);
+    setUploadError(null);
+    
     const sasUrl = process.env.REACT_APP_AZURE_SAS_URL!;
     const containerName = process.env.REACT_APP_AZURE_CONTAINER_NAME!;
     const authorId = Cookies.get('userId');
     const token = Cookies.get('authToken');
-
-    console.log('SAS URL:', sasUrl);
-    console.log('Container Name:', containerName);
-    console.log('Selected file before upload:', file); // Ajoute ce log pour vérifier l'état du fichier
-
+    
     if (!sasUrl || !containerName || !authorId || !token) {
-      console.error('Missing SAS URL, Container Name, authorId, or token');
+      setUploadError('Missing required configuration. Please try again later.');
+      setIsUploading(false);
       return;
     }
-
+    
     if (file) {
-      console.log('Uploading file:', file.name);
       try {
         const blobServiceClient = new BlobServiceClient(sasUrl);
         const containerClient = blobServiceClient.getContainerClient(containerName);
         const blockBlobClient = containerClient.getBlockBlobClient(file.name);
-
-        console.log('BlockBlobClient URL:', blockBlobClient.url);
-
+        
         await blockBlobClient.uploadBrowserData(file);
-
+        
         const fileUrl = blockBlobClient.url;
-
-        console.log('File URL:', fileUrl);
-
+        
         const response = await fetch('http://localhost:3000/documents', {
           method: 'POST',
           headers: {
@@ -66,28 +83,89 @@ const UploadDocument: React.FC = () => {
             authorId
           }),
         });
-
+        
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Failed to upload document metadata:', response.statusText, errorText);
-        } else {
-          console.log('Document metadata uploaded successfully');
+          throw new Error(errorText);
         }
+        
+        setUploadSuccess(true);
+        setTitle('');
+        setDescription('');
+        setFile(null);
+        setFileType('');
       } catch (error) {
         console.error('Error uploading file:', error);
+        setUploadError('Failed to upload document. Please try again.');
       }
     } else {
-      console.log('No file selected'); // Ajoute ce log pour le cas où le fichier n'est pas sélectionné
+      setUploadError('No file selected. Please choose a file to upload.');
     }
+    setIsUploading(false);
   };
-
+  
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+  
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+  
   return (
-      <div>
-        <input type="file" onChange={handleFileChange} />
-        <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-        <button onClick={handleUpload}>Upload</button>
-      </div>
+      <ComposedBackground>
+        <Navbar />
+        <div className="d-flex min-vh-100">
+          {isSidebarOpen && <SideBar onClose={closeSidebar} />}
+          <div className={`flex-grow-1 ${isSidebarOpen ? "mx-0" : ""}`}>
+            <ToggleSidebarButton onClick={toggleSidebar} isOpen={isSidebarOpen} />
+            <div className="container mt-4">
+              <h1 className="mb-4">Upload Document</h1>
+              <form onSubmit={(e) => { e.preventDefault(); handleUpload(); }} className="mb-4">
+                <div className="mb-3">
+                  <label htmlFor="file" className="form-label">Choose File</label>
+                  <input type="file" className="form-control" id="file" onChange={handleFileChange} />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="title" className="form-label">Title</label>
+                  <input
+                      type="text"
+                      className="form-control"
+                      id="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Enter document title"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="description" className="form-label">Description</label>
+                  <textarea
+                      className="form-control"
+                      id="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Enter document description"
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary" disabled={isUploading}>
+                  {isUploading ? 'Uploading...' : 'Upload'}
+                </button>
+              </form>
+              {uploadSuccess && (
+                  <div className="alert alert-success" role="alert">
+                    Document uploaded successfully!
+                  </div>
+              )}
+              {uploadError && (
+                  <div className="alert alert-danger" role="alert">
+                    {uploadError}
+                  </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </ComposedBackground>
   );
 };
 
