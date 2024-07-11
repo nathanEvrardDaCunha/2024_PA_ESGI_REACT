@@ -333,7 +333,7 @@ const UserDocumentsPage: React.FC = () => {
     return (
         <ComposedBackground>
             <Navbar />
-            <div className="d-flex mb-5">
+            <div className="d-flex mb-5 min-vh-100">
                 {isSidebarOpen && <SideBar onClose={closeSidebar} />}
                 <div className={`flex-grow-1 ${isSidebarOpen ? "mx-0" : ""}`}>
                     <ToggleSidebarButton onClick={toggleSidebar} isOpen={isSidebarOpen} />

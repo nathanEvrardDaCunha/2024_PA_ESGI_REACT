@@ -46,6 +46,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/register-location" element={<RegisterLocationPage />} />
                 <Route path="/donation" element={<DonationPage />} />
                 <Route path="/groups" element={<CreateGroupPage />} />
                 <Route path="/groups/document" element={<AssignDocumentPage />} />
