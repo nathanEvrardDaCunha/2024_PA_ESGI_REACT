@@ -13,7 +13,8 @@ const GeneralAssemblyForm: React.FC = () => {
         outcome: '',
         creationDate: new Date(),
         endingDate: new Date(),
-        topics: []
+        topics: [],
+        surveys: []
     });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -21,8 +22,13 @@ const GeneralAssemblyForm: React.FC = () => {
     };
 
     const addTopic = () => {
-        const newTopics = [...generalAssembly.topics, { label: '', description: '', status: '', isAnonyme: false, modality: '', quorum: 0, totalRounds:1, choices: [] }];
+        const newTopics = [...generalAssembly.topics, { label: '', description: '', status: '', isAnonyme: false, modality: '', quorum: 0, totalRounds: 1, choices: [] }];
         setGeneralAssembly({ ...generalAssembly, topics: newTopics });
+    };
+
+    const addSurvey = () => {
+        const newSurveys = [...generalAssembly.surveys, { title: '', description: '', questions: [] }];
+        setGeneralAssembly({ ...generalAssembly, surveys: newSurveys });
     };
 
     const handleTopicChange = (index: number, topic: Topic) => {
@@ -31,9 +37,14 @@ const GeneralAssemblyForm: React.FC = () => {
         setGeneralAssembly({ ...generalAssembly, topics: newTopics });
     };
 
+    const handleSurveyChange = (index: number, survey: any) => {
+        const newSurveys = [...generalAssembly.surveys];
+        newSurveys[index] = survey;
+        setGeneralAssembly({ ...generalAssembly, surveys: newSurveys });
+    };
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log("Submitting assembly:", generalAssembly);
 
         try {
             const response = await fetch("http://localhost:3000/assemblies", {
@@ -50,7 +61,6 @@ const GeneralAssemblyForm: React.FC = () => {
                 console.error("Failed to create Assembly:", errorData);
             } else {
                 setSuccess("Assembly created successfully");
-                console.log("Assembly created successfully");
             }
         } catch (error) {
             setError("Error during registration");
@@ -77,6 +87,74 @@ const GeneralAssemblyForm: React.FC = () => {
                 <TopicForm key={index} topic={topic} onChange={(updatedTopic) => handleTopicChange(index, updatedTopic)} />
             ))}
             <button type="button" onClick={addTopic}>Add Topic</button>
+
+            {generalAssembly.surveys.map((survey, index) => (
+                <div key={index}>
+                    <h3>Survey {index + 1}</h3>
+                    <label>
+                        Title:
+                        <input type="text" value={survey.title} onChange={(e) => handleSurveyChange(index, { ...survey, title: e.target.value })} />
+                    </label>
+                    <label>
+                        Description:
+                        <textarea value={survey.description} onChange={(e) => handleSurveyChange(index, { ...survey, description: e.target.value })} />
+                    </label>
+                    {survey.questions.map((question: any, qIndex: number) => (
+                        <div key={qIndex}>
+                            <label>Question {qIndex + 1}</label>
+                            <input
+                                type="text"
+                                value={question.label}
+                                onChange={(e) => {
+                                    const newQuestions = [...survey.questions];
+                                    newQuestions[qIndex] = { ...question, label: e.target.value };
+                                    handleSurveyChange(index, { ...survey, questions: newQuestions });
+                                }}
+                            />
+                            <select
+                                value={question.type}
+                                onChange={(e) => {
+                                    const newQuestions = [...survey.questions];
+                                    newQuestions[qIndex] = { ...question, type: e.target.value };
+                                    handleSurveyChange(index, { ...survey, questions: newQuestions });
+                                }}
+                            >
+                                <option value="TEXT">Text</option>
+                                <option value="MULTIPLE_CHOICE">Multiple Choice</option>
+                                <option value="CHECKBOX">Checkbox</option>
+                            </select>
+                            {question.type !== 'TEXT' && (
+                                <div>
+                                    {question.options.map((option: string, oIndex: number) => (
+                                        <input
+                                            key={oIndex}
+                                            type="text"
+                                            value={option}
+                                            onChange={(e) => {
+                                                const newOptions = [...question.options];
+                                                newOptions[oIndex] = e.target.value;
+                                                const newQuestions = [...survey.questions];
+                                                newQuestions[qIndex] = { ...question, options: newOptions };
+                                                handleSurveyChange(index, { ...survey, questions: newQuestions });
+                                            }}
+                                        />
+                                    ))}
+                                    <button type="button" onClick={() => {
+                                        const newQuestions = [...survey.questions];
+                                        newQuestions[qIndex] = { ...question, options: [...question.options, ''] };
+                                        handleSurveyChange(index, { ...survey, questions: newQuestions });
+                                    }}>Add Option</button>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                    <button type="button" onClick={() => {
+                        const newQuestions = [...survey.questions, { label: '', type: 'TEXT', options: [] }];
+                        handleSurveyChange(index, { ...survey, questions: newQuestions });
+                    }}>Add Question</button>
+                </div>
+            ))}
+            <button type="button" onClick={addSurvey}>Add Survey</button>
             <button type="submit">Submit</button>
             {error && <div style={{ color: 'red' }}>{error}</div>}
             {success && <div style={{ color: 'green' }}>{success}</div>}
