@@ -3,14 +3,19 @@ import { useState, useEffect } from 'react';
 import AssemblyDetails from '../components/AssemblyDetails.tsx';
 // @ts-ignore
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
+import {Survey} from "../components/Types";
 
-interface Assembly {
-    id: string;
-    name: string;
+export interface Assembly {
+    id:string;
+    meetingDate: Date;
+    status: string;
+    outcome: string;
+    creationDate: Date;
+    endingDate: Date;
     topics: Topic[];
-    person: Person[];
+    surveys: Survey[];
 }
-
 interface Topic {
     id: string;
     label: string;
@@ -24,7 +29,7 @@ interface Choice {
     id: string;
     description: string;
     voteCount: number;
-    voters: Person[]; // Ajouter cette propriété pour afficher le nombre de votants
+    voters: Person[];
 }
 
 interface Person {
@@ -76,7 +81,11 @@ const UserAssembliesPage = () => {
             <h1>Your Assemblies</h1>
             {assemblies.length > 0 ? (
                 assemblies.map(assembly => (
-                    <AssemblyDetails key={assembly.id} assembly={assembly} />
+                    <div key={assembly.id}>
+                        <Link to={`/assemblies/${assembly.id}`}>
+                            <h2>{new Date(assembly.meetingDate).toLocaleDateString()}</h2>
+                        </Link>
+                    </div>
                 ))
             ) : (
                 <div>No assemblies found.</div>

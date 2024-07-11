@@ -27,7 +27,9 @@ import GeneralAssemblyForm from "./components/GeneralAssemblyForm.tsx";
 import VoteResults from "./components/VoteResults.tsx";
 import AssembliesList from "./pages/AssembliesList.tsx";
 import AssemblyDetails from "./components/AssemblyDetails.tsx";
-import RegisterLocationPage from "./pages/RegisterLocationPage.tsx";
+import AssemblyPage from "./pages/AssemblyPage.tsx";
+import AdminAssemblyPage from "./components/Admin/AdminAssemblyPage.tsx";
+import AdminAssembliesList from "./components/Admin/AdminAssembliesList.tsx";
 
 const PrivateRoute = ({ children }) => {
     const authToken = Cookies.get("authToken");
@@ -41,18 +43,18 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/register-location" element={<RegisterLocationPage />} />
                 <Route path="/donation" element={<DonationPage />} />
                 <Route path="/groups" element={<CreateGroupPage />} />
                 <Route path="/groups/document" element={<AssignDocumentPage />} />
                 <Route path="/document/upload" element={<UploadDocument />} />
                 <Route path="/document" element={<UserDocumentsPage />} />
                 <Route path="/membership" element={<MembershipPage />} />
-                <Route path="/assembly/list" element={<GeneralAssemblyPage />} />
+                <Route path="/assembly/list" element={<GeneralAssemblyPage />} /> //page avec la liste des assemblé pour les assignée
                 <Route path="/assembly" element={<GeneralAssemblyForm />} />
                 <Route path="/assemblies/:assemblyId/results" element={<VoteResults />} />
-                <Route path="/assemblies" element={<AssembliesList/> }/>
-                <Route path="/assembly/people" element={<GeneralAssemblyPeoplePage />} />
+                <Route path="/admin/assemblies/:assemblyId" element={<AdminAssemblyPage />} />
+                <Route path="/admin/assemblies" element={<AdminAssembliesList />} />//liste assemblé pour admin
+                <Route path="/assemblies/:id" element={<AssemblyPage/>} /> // page qui affiche le contenue de l'assemblée
                 <Route path="/not-authorized" element={<NotAuthorizedPage />} />
                 <Route path="/assemblies/:assemblyId/link-people" element={<LinkPeopleToAssemblyPage />} />
                 <Route path="/user/assemblies" element={
