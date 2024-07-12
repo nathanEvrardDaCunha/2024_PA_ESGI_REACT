@@ -1,5 +1,5 @@
-// @ts-ignore
-import React from "react";
+import * as React from "react";
+import { Form, Button, InputGroup } from 'react-bootstrap';
 import { Choice } from "./Types";
 
 interface ChoiceInputProps {
@@ -10,15 +10,20 @@ interface ChoiceInputProps {
 }
 
 const ChoiceInput: React.FC<ChoiceInputProps> = ({ index, choice, handleChoiceChange, removeChoice }) => (
-    <div>
-        <input
+    <InputGroup className="mb-3">
+        <Form.Control
             type="text"
-            placeholder="Description"
+            placeholder="Enter choice description"
             value={choice.description}
             onChange={(e) => handleChoiceChange(index, e.target.value)}
         />
-        <button type="button" onClick={() => removeChoice(index)}>Remove</button>
-    </div>
+        <Button
+            variant="outline-danger"
+            onClick={() => removeChoice(index)}
+        >
+            <i className="bi bi-trash"></i>
+        </Button>
+    </InputGroup>
 );
 
 export default ChoiceInput;
