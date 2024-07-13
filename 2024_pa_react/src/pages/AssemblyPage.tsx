@@ -126,7 +126,7 @@ const AssemblyPage: React.FC = () => {
         return (
             <ComposedBackground>
                 <Navbar />
-                <Container className="mt-5">
+                <Container className="mt-5v min-vh-100">
                     <Alert variant="danger">Error: {error}</Alert>
                 </Container>
                 <Footer />
@@ -138,7 +138,7 @@ const AssemblyPage: React.FC = () => {
         return (
             <ComposedBackground>
                 <Navbar />
-                <Container className="mt-5">
+                <Container className="mt-5 min-vh-100">
                     <Alert variant="info">No assembly found.</Alert>
                 </Container>
                 <Footer />

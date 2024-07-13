@@ -125,7 +125,7 @@ const AdminAssemblyPage: React.FC = () => {
         return (
             <ComposedBackground>
                 <Navbar />
-                <Container className="mt-5">
+                <Container className="mt-5 min-vh-100">
                     <Alert variant="danger">Error: {error}</Alert>
                 </Container>
                 <Footer />
@@ -137,7 +137,7 @@ const AdminAssemblyPage: React.FC = () => {
         return (
             <ComposedBackground>
                 <Navbar />
-                <Container className="mt-5">
+                <Container className="mt-5 min-vh-100">
                     <Alert variant="info">No assembly found.</Alert>
                 </Container>
                 <Footer />
@@ -148,7 +148,7 @@ const AdminAssemblyPage: React.FC = () => {
     return (
         <ComposedBackground>
             <Navbar />
-            <div className="d-flex">
+            <div className="d-flex min-vh-100">
                 {isSidebarOpen && <SideBar onClose={closeSidebar} />}
                 <div className={`flex-grow-1 ${isSidebarOpen ? "mx-0" : ""}`}>
                     <ToggleSidebarButton onClick={toggleSidebar} isOpen={isSidebarOpen} />
