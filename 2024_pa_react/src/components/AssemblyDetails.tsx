@@ -59,6 +59,7 @@ interface Question {
 }
 
 const ButtonLink = React.forwardRef<HTMLAnchorElement, LinkProps & React.ComponentPropsWithoutRef<typeof Button>>((props, ref) => (
+    // @ts-ignore
     <Button as={Link} ref={ref} {...props} />
 ));
 

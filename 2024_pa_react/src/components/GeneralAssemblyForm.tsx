@@ -282,7 +282,7 @@ const GeneralAssemblyForm: React.FC = () => {
                                     </Card.Body>
                                 </Card>
                             ))}
-                            <Button variant="outline-secondary" onClick={addSurvey} className="mb-4">Add Survey</Button>
+                            <Button variant="outline-sefcondary" onClick={addSurvey} className="mb-4">Add Survey</Button>
                             
                             <div>
                                 <Button variant="primary" type="submit">Create General Assembly</Button>
