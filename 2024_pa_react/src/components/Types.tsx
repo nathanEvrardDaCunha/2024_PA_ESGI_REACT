@@ -48,11 +48,11 @@ export interface Response {
 }
 
 export interface GeneralAssembly {
-    meetingDate: Date;
+    meetingDate: string;
     status: string;
     outcome: string;
-    creationDate: Date;
-    endingDate: Date;
+    creationDate: string;
+    endingDate: string;
     topics: Topic[];
     surveys: Survey[];
 }

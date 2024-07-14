@@ -1,6 +1,15 @@
-import { useState, useEffect } from 'react';
+import * as React from "react";
+import {useEffect, useState} from "react";
 // @ts-ignore
 import Cookies from 'js-cookie';
+// @ts-ignore
+import Navbar from "../components/NavBar.tsx";
+// @ts-ignore
+import ComposedBackground from "../components/ComposedBackground.tsx";
+// @ts-ignore
+import Footer from "../components/Footer.tsx";
+// @ts-ignore
+import SideBar from "../components/SideBar.tsx";
 
 interface Document {
     id: string;
@@ -25,6 +34,16 @@ interface Folder {
     documents: Document[];
 }
 
+const ToggleSidebarButton = ({ onClick, isOpen }) => (
+    <button
+        className={`bg-dark d-flex align-items-center ${isOpen ? 'active' : ''}`}
+        onClick={onClick}
+    >
+        <i className={`bi bi-list${isOpen ? 'bi-x' : ''}`}></i>
+        <span className={'text-light'}>X</span>
+    </button>
+);
+
 const UserDocumentsPage: React.FC = () => {
     const [documents, setDocuments] = useState<Document[]>([]);
     const [folders, setFolders] = useState<Folder[]>([]);
@@ -33,9 +52,10 @@ const UserDocumentsPage: React.FC = () => {
     const [selectedItem, setSelectedItem] = useState<Folder | Document | null>(null);
     const [targetFolder, setTargetFolder] = useState<Folder | null>(null);
     const [filterPath, setFilterPath] = useState<string>('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const userId = Cookies.get('userId');
     const token = Cookies.get('authToken');
-
+    
     useEffect(() => {
         const fetchDocuments = async () => {
             try {
@@ -46,11 +66,11 @@ const UserDocumentsPage: React.FC = () => {
                         'user-id': userId!,
                     },
                 });
-
+                
                 if (!response.ok) {
                     throw new Error('Failed to fetch documents');
                 }
-
+                
                 const data = await response.json();
                 setDocuments(data);
                 const tree = buildTree(data);
@@ -59,10 +79,10 @@ const UserDocumentsPage: React.FC = () => {
                 setError(error.message);
             }
         };
-
+        
         fetchDocuments();
     }, [userId, token]);
-
+    
     const handleDownload = (fileUrl: string) => {
         const link = document.createElement('a');
         link.href = fileUrl;
@@ -71,14 +91,14 @@ const UserDocumentsPage: React.FC = () => {
         link.click();
         document.body.removeChild(link);
     };
-
+    
     const buildTree = (documents: Document[]): Folder[] => {
         const root: Folder = { name: 'root', path: '', children: [], documents: [] };
-
+        
         documents.forEach(document => {
             const parts = document.path.split('/').filter(Boolean);
             let currentFolder = root;
-
+            
             parts.forEach((part, index) => {
                 let folder = currentFolder.children.find(child => child.name === part);
                 if (!folder) {
@@ -91,18 +111,18 @@ const UserDocumentsPage: React.FC = () => {
                 currentFolder = folder;
             });
         });
-
+        
         return root.children;
     };
-
+    
     const filterTree = (folders: Folder[], filterPath: string): Folder[] => {
         if (!filterPath) {
             return folders;
         }
-
+        
         const parts = filterPath.split('/').filter(Boolean);
         let currentFolders = folders;
-
+        
         for (const part of parts) {
             const folder = currentFolders.find(f => f.name === part);
             if (folder) {
@@ -111,28 +131,28 @@ const UserDocumentsPage: React.FC = () => {
                 return [];
             }
         }
-
+        
         return currentFolders;
     };
-
+    
     const renderTree = (folders: Folder[], parentPath = '') => (
-        <ul>
+        <ul className="list-group">
             {folders.map(folder => (
-                <li key={folder.path} onClick={(e) => { e.stopPropagation(); handleFolderClick(folder); }}>
+                <li key={folder.path} className="list-group-item" onClick={(e) => { e.stopPropagation(); handleFolderClick(folder); }}>
                     <h3>
                         {folder.name}
-                        <button onClick={(e) => { e.stopPropagation(); handleFolderDownload(folder); }}>Download All</button>
+                        <button className="btn btn-sm btn-primary ms-2" onClick={(e) => { e.stopPropagation(); handleFolderDownload(folder); }}>Download All</button>
                     </h3>
                     {folder.children && renderTree(folder.children, `${parentPath}/${folder.name}`)}
                     {folder.documents.length > 0 && (
-                        <ul>
+                        <ul className="list-group mt-2">
                             {folder.documents.map(doc => (
-                                <li key={doc.id} onClick={(e) => { e.stopPropagation(); handleDocumentClick(doc); }}>
-                                    <h2>{doc.title}</h2>
+                                <li key={doc.id} className="list-group-item" onClick={(e) => { e.stopPropagation(); handleDocumentClick(doc); }}>
+                                    <h4>{doc.title}</h4>
                                     <p>{doc.description}</p>
                                     <p>Author: {doc.authorFirstName} {doc.authorLastName}</p>
                                     <p>Created on: {new Date(doc.creationDate).toLocaleDateString()}</p>
-                                    <button onClick={() => handleDownload(doc.fileUrl)}>Download</button>
+                                    <button className="btn btn-sm btn-secondary" onClick={() => handleDownload(doc.fileUrl)}>Download</button>
                                 </li>
                             ))}
                         </ul>
@@ -141,7 +161,7 @@ const UserDocumentsPage: React.FC = () => {
             ))}
         </ul>
     );
-
+    
     const handleFolderClick = (folder: Folder) => {
         if (selectedItem && !targetFolder) {
             setTargetFolder(folder);
@@ -149,7 +169,7 @@ const UserDocumentsPage: React.FC = () => {
             setSelectedItem(folder);
         }
     };
-
+    
     const handleDocumentClick = (document: Document) => {
         if (selectedItem) {
             setTargetFolder(null);
@@ -157,12 +177,11 @@ const UserDocumentsPage: React.FC = () => {
             setSelectedItem(document);
         }
     };
-
+    
     const handleConfirmMove = async () => {
         if (selectedItem && targetFolder) {
             let newPath;
             if ('title' in selectedItem) {
-                // Si selectedItem est un Document
                 newPath = `${targetFolder.path}/${selectedItem.title}`;
                 const updatedDocuments = documents.map(doc =>
                     doc.id === selectedItem.id ? { ...doc, path: newPath } : doc
@@ -170,8 +189,6 @@ const UserDocumentsPage: React.FC = () => {
                 setDocuments(updatedDocuments);
                 await updateDocumentPathInDatabase(selectedItem, newPath);
             } else {
-                // Si selectedItem est un Folder
-                console.log("path: " + targetFolder.path + "/" + selectedItem.name);
                 newPath = `${targetFolder.path}/${selectedItem.name}`;
                 const updatedFolders = moveFolder(folders, selectedItem.path, newPath);
                 setFolders(updatedFolders);
@@ -181,7 +198,7 @@ const UserDocumentsPage: React.FC = () => {
             setTargetFolder(null);
         }
     };
-
+    
     const moveFolder = (folders: Folder[], oldPath: string, newPath: string): Folder[] => {
         const findAndMoveFolder = (nodes: Folder[]): Folder[] => {
             return nodes.map(node => {
@@ -203,10 +220,10 @@ const UserDocumentsPage: React.FC = () => {
                 }
             });
         };
-
+        
         return findAndMoveFolder(folders);
     };
-
+    
     const updateDocumentPathInDatabase = async (document: Document, newPath: string) => {
         try {
             await fetch(`http://localhost:3000/documents/${document.id}/path`, {
@@ -222,11 +239,10 @@ const UserDocumentsPage: React.FC = () => {
             setError(error.message);
         }
     };
-
+    
     const updateFolderPathsInDatabase = async (folder: Folder, newPath: string, oldPath: string) => {
         const updatePathsRecursively = async (node: Folder | Document, currentPath: string, newBasePath: string) => {
             if ('title' in node) {
-                // Update document path
                 const newDocPath = node.path.replace(currentPath, newBasePath);
                 try {
                     await fetch(`http://localhost:3000/documents/${node.id}/path`, {
@@ -242,7 +258,6 @@ const UserDocumentsPage: React.FC = () => {
                     setError(error.message);
                 }
             } else {
-                // Update folder path and children paths
                 const updatedPath = node.path.replace(currentPath, newBasePath);
                 try {
                     await fetch(`http://localhost:3000/documents/folders/${encodeURIComponent(node.path)}`, {
@@ -265,10 +280,10 @@ const UserDocumentsPage: React.FC = () => {
                 }
             }
         };
-
+        
         await updatePathsRecursively(folder, oldPath, newPath);
     };
-
+    
     const handleFolderDownload = async (folder: Folder) => {
         try {
             const response = await fetch(`http://localhost:3000/documents/folder/${encodeURIComponent(folder.path)}/download`, {
@@ -277,11 +292,11 @@ const UserDocumentsPage: React.FC = () => {
                     'user-id': userId!,
                 },
             });
-
+            
             if (!response.ok) {
                 throw new Error('Failed to download folder');
             }
-
+            
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -295,46 +310,68 @@ const UserDocumentsPage: React.FC = () => {
             setError(error.message);
         }
     };
-
+    
     const handleCreateFolder = (e: React.FormEvent) => {
         e.preventDefault();
         if (newFolderName.trim() === '') return;
         setFolders([...folders, { name: newFolderName.trim(), path: `/${newFolderName.trim()}`, children: [], documents: [] }]);
         setNewFolderName('');
     };
-
+    
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFilterPath(e.target.value);
     };
-
+    
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+    
+    const closeSidebar = () => {
+        setIsSidebarOpen(false);
+    };
+    
     return (
-        <div>
-            <h1>User Documents</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleCreateFolder}>
-                <input
-                    type="text"
-                    value={newFolderName}
-                    onChange={(e) => setNewFolderName(e.target.value)}
-                    placeholder="New folder name"
-                />
-                <button type="submit">Create Folder</button>
-            </form>
-            <input
-                type="text"
-                value={filterPath}
-                onChange={handleFilterChange}
-                placeholder="Filter by path"
-            />
-            {selectedItem && targetFolder && (
-                <div>
-                    <p>Move <strong>{'title' in selectedItem ? selectedItem.title : selectedItem.name}</strong> to <strong>{targetFolder.name}</strong>?</p>
-                    <button onClick={handleConfirmMove}>Confirm Move</button>
-                    <button onClick={() => { setSelectedItem(null); setTargetFolder(null); }}>Cancel</button>
+        <ComposedBackground>
+            <Navbar />
+            <div className="d-flex mb-5 min-vh-100">
+                {isSidebarOpen && <SideBar onClose={closeSidebar} />}
+                <div className={`flex-grow-1 ${isSidebarOpen ? "mx-0" : ""}`}>
+                    <ToggleSidebarButton onClick={toggleSidebar} isOpen={isSidebarOpen} />
+                    <div className="container mt-4">
+                        <h1 className="mb-4">User Documents</h1>
+                        {error && <p className="alert alert-danger">{error}</p>}
+                        <form onSubmit={handleCreateFolder} className="mb-4">
+                            <div className="input-group">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={newFolderName}
+                                    onChange={(e) => setNewFolderName(e.target.value)}
+                                    placeholder="New folder name"
+                                />
+                                <button type="submit" className="btn btn-primary">Create Folder</button>
+                            </div>
+                        </form>
+                        <input
+                            type="text"
+                            className="form-control mb-4"
+                            value={filterPath}
+                            onChange={handleFilterChange}
+                            placeholder="Filter by path"
+                        />
+                        {selectedItem && targetFolder && (
+                            <div className="alert alert-info">
+                                <p>Move <strong>{'title' in selectedItem ? selectedItem.title : selectedItem.name}</strong> to <strong>{targetFolder.name}</strong>?</p>
+                                <button className="btn btn-success me-2" onClick={handleConfirmMove}>Confirm Move</button>
+                                <button className="btn btn-secondary" onClick={() => { setSelectedItem(null); setTargetFolder(null); }}>Cancel</button>
+                            </div>
+                        )}
+                        {folders && renderTree(filterTree(folders, filterPath))}
+                    </div>
                 </div>
-            )}
-            {folders && renderTree(filterTree(folders, filterPath))}
-        </div>
+            </div>
+            <Footer />
+        </ComposedBackground>
     );
 };
 
