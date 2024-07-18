@@ -22,7 +22,7 @@ const DocumentsPage: React.FC = () => {
     useEffect(() => {
         const fetchDocuments = async () => {
             try {
-                const response = await fetch('http://localhost:3000/documents', {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/documents`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,

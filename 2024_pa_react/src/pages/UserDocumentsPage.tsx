@@ -59,7 +59,7 @@ const UserDocumentsPage: React.FC = () => {
     useEffect(() => {
         const fetchDocuments = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/documents/user/${userId}`, {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/documents/user/${userId}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
@@ -226,7 +226,7 @@ const UserDocumentsPage: React.FC = () => {
     
     const updateDocumentPathInDatabase = async (document: Document, newPath: string) => {
         try {
-            await fetch(`http://localhost:3000/documents/${document.id}/path`, {
+            await fetch(`${process.env.REACT_APP_API_BASE_URL}/documents/${document.id}/path`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -245,7 +245,7 @@ const UserDocumentsPage: React.FC = () => {
             if ('title' in node) {
                 const newDocPath = node.path.replace(currentPath, newBasePath);
                 try {
-                    await fetch(`http://localhost:3000/documents/${node.id}/path`, {
+                    await fetch(`${process.env.REACT_APP_API_BASE_URL}/documents/${node.id}/path`, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json',
@@ -260,7 +260,7 @@ const UserDocumentsPage: React.FC = () => {
             } else {
                 const updatedPath = node.path.replace(currentPath, newBasePath);
                 try {
-                    await fetch(`http://localhost:3000/documents/folders/${encodeURIComponent(node.path)}`, {
+                    await fetch(`${process.env.REACT_APP_API_BASE_URL}/documents/folders/${encodeURIComponent(node.path)}`, {
                         method: 'PATCH',
                         headers: {
                             'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ const UserDocumentsPage: React.FC = () => {
     
     const handleFolderDownload = async (folder: Folder) => {
         try {
-            const response = await fetch(`http://localhost:3000/documents/folder/${encodeURIComponent(folder.path)}/download`, {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/documents/folder/${encodeURIComponent(folder.path)}/download`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'user-id': userId!,

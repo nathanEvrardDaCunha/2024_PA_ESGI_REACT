@@ -68,7 +68,7 @@ const UploadDocument: React.FC = () => {
         
         const fileUrl = blockBlobClient.url;
         
-        const response = await fetch('http://localhost:3000/documents', {
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/documents`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

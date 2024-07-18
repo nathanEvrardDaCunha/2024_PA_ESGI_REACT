@@ -13,7 +13,7 @@ const TopicsPage: React.FC = () => {
     useEffect(() => {
         const fetchTopics = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/topics');
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/topics`);
                 setTopics(response.data);
             } catch (error) {
                 console.error('Error fetching topics:', error);

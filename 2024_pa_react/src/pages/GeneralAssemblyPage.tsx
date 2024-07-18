@@ -36,7 +36,7 @@ const GeneralAssembliesPage = () => {
     useEffect(() => {
         const fetchAssemblies = async () => {
             try {
-                const response = await fetch('http://localhost:3000/assemblies');
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

@@ -17,7 +17,7 @@ const GeneralAssemblyPeoplePage = () => {
             setLoading(true);
             setError('');
             try {
-                const response = await fetch('http://localhost:3000/persons');
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/persons`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

@@ -33,7 +33,7 @@ const LinkPeopleToAssemblyPage = () => {
     useEffect(() => {
         const fetchPersons = async () => {
             try {
-                const response = await fetch('http://localhost:3000/persons');
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/persons`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch persons');
                 }
@@ -60,7 +60,7 @@ const LinkPeopleToAssemblyPage = () => {
     
     const handleSubmit = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/assemblies/${assemblyId}/link-people`, {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/${assemblyId}/link-people`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

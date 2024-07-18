@@ -25,7 +25,7 @@ const VotePage: React.FC = () => {
     useEffect(() => {
         const fetchTopic = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/topics/${topicId}`);
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/topics/${topicId}`);
                 setTopic(response.data);
             } catch (error) {
                 console.error('Error fetching topic:', error);
@@ -43,7 +43,7 @@ const VotePage: React.FC = () => {
                 return;
             }
 
-            await axios.post('http://localhost:3000/vote', {
+            await axios.post(`${process.env.REACT_APP_API_BASE_URL}/vote`, {
                 personId,
                 topicId: topic?.id,
                 choiceId: selectedChoice,

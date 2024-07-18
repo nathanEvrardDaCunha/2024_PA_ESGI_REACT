@@ -55,7 +55,7 @@ const UserAssembliesPage: React.FC = () => {
             }
             
             try {
-                const response = await fetch(`http://localhost:3000/assemblies/person/${userId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/person/${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch assemblies');
                 }

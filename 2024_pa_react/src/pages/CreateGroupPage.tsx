@@ -42,7 +42,7 @@ const CreateGroupPage: React.FC = () => {
     useEffect(() => {
         const fetchPersons = async () => {
             try {
-                const response = await fetch('http://localhost:3000/persons', {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/persons`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
@@ -76,7 +76,7 @@ const CreateGroupPage: React.FC = () => {
         };
         
         try {
-            const response = await fetch('http://localhost:3000/groups', {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/groups`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

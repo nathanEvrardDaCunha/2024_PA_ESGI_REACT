@@ -42,7 +42,7 @@ const VoteResults: React.FC = () => {
     useEffect(() => {
         const fetchResults = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/assemblies/${assemblyId}/results`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/${assemblyId}/results`);
                 const data = await response.json();
                 if (response.ok) {
                     setResults(data);

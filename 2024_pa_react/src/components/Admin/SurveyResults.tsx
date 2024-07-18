@@ -21,7 +21,7 @@ const SurveyResults: React.FC<SurveyResultsProps> = ({ surveyId }) => {
     useEffect(() => {
         const fetchResults = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/surveys/results/${surveyId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/surveys/results/${surveyId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch results');
                 }

@@ -82,7 +82,7 @@ const AssemblyPage: React.FC = () => {
             setLoading(true);
             
             try {
-                const response = await fetch(`http://localhost:3000/assemblies/${id}`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/${id}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch assembly');
                 }

@@ -31,7 +31,7 @@ const SurveyResponseForm: React.FC<SurveyResponseFormProps> = ({ assemblyId }) =
     useEffect(() => {
         const fetchSurvey = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/assemblies/${assemblyId}/survey`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/${assemblyId}/survey`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch survey');
                 }
@@ -72,7 +72,7 @@ const SurveyResponseForm: React.FC<SurveyResponseFormProps> = ({ assemblyId }) =
         };
         
         try {
-            const response = await fetch('http://localhost:3000/surveys/response', {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/surveys/response`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -9,7 +9,7 @@ const AssembliesList = () => {
     useEffect(() => {
         const fetchAssemblies = async () => {
             try {
-                const response = await fetch('http://localhost:3000/assemblies');
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies`);
                 const data = await response.json();
                 if (response.ok) {
                     setAssemblies(data);

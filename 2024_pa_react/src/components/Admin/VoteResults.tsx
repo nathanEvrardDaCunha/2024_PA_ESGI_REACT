@@ -30,7 +30,7 @@ const VoteResults: React.FC<VoteResultsProps> = ({ assemblyId }) => {
     useEffect(() => {
         const fetchVotes = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/assemblies/${assemblyId}/results`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/${assemblyId}/results`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch votes');
                 }
@@ -48,7 +48,7 @@ const VoteResults: React.FC<VoteResultsProps> = ({ assemblyId }) => {
 
     const fetchTopics = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/assemblies/${assemblyId}/filtered-topics/`);
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/${assemblyId}/filtered-topics/`);
             const data = await response.json();
             setVotes(data.topics);
         } catch (error) {

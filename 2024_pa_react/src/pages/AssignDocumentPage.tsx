@@ -1,3 +1,4 @@
+// @ts-ignore
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Alert, Card, ListGroup } from 'react-bootstrap';
 // @ts-ignore
@@ -46,7 +47,7 @@ const AssignDocumentPage: React.FC = () => {
     useEffect(() => {
         const fetchGroups = async () => {
             try {
-                const response = await fetch('http://localhost:3000/groups', {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/groups`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
@@ -69,7 +70,7 @@ const AssignDocumentPage: React.FC = () => {
         
         const fetchDocuments = async () => {
             try {
-                const response = await fetch('http://localhost:3000/documents', {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/documents`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
@@ -114,7 +115,7 @@ const AssignDocumentPage: React.FC = () => {
         const path = `/groupDocument/${selectedGroupName}`;
         
         try {
-            const response = await fetch(`http://localhost:3000/groups/${selectedGroup}/documents`, {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/groups/${selectedGroup}/documents`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

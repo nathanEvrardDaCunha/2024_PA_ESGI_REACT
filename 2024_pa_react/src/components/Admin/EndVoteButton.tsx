@@ -13,7 +13,7 @@ const EndVoteButton: React.FC<EndVoteButtonProps> = ({ topicId, onEndVote }) => 
     const handleEndVote = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/topics/${topicId}/next-round-or-end`, {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/topics/${topicId}/next-round-or-end`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

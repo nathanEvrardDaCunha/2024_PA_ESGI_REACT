@@ -71,7 +71,7 @@ const AdminAssemblyPage: React.FC = () => {
     useEffect(() => {
         const fetchAssembly = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/assemblies/${assemblyId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/${assemblyId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch assembly');
                 }
@@ -91,7 +91,7 @@ const AdminAssemblyPage: React.FC = () => {
     const fetchTopics = async () => {
         if (!assembly) return;
         try {
-            const response = await fetch(`http://localhost:3000/assemblies/${assembly.id}/filtered-topics/`);
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/assemblies/${assembly.id}/filtered-topics/`);
             const data = await response.json();
             setAssembly({ ...assembly, topics: data.topics });
         } catch (error) {
