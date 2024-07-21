@@ -33,6 +33,7 @@ import MembershipSuccessPage from "./pages/MembershipSuccessPage.tsx";
 import AssemblyPage from "./pages/AssemblyPage.tsx";
 import AdminAssemblyPage from "./components/Admin/AdminAssemblyPage.tsx";
 import AdminAssembliesList from "./components/Admin/AdminAssembliesList.tsx";
+import Chatbot from "./components/ChatBot/Chatbot.tsx";
 
 const PrivateRoute = ({ children }) => {
     const authToken = Cookies.get("authToken");
@@ -42,89 +43,92 @@ const PrivateRoute = ({ children }) => {
 function App() {
     return (
         <Router>
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/register-location" element={<RegisterLocationPage />} />
-                <Route path="/donation" element={<DonationPage />} />
-                <Route path="/groups" element={<CreateGroupPage />} />
-                <Route path="/groups/document" element={<AssignDocumentPage />} />
-                <Route path="/donation-success" element={<DonationSuccessPage />} />
-                <Route path="/membership-success" element={<MembershipSuccessPage />} />
-                <Route path="/document/upload" element={<UploadDocument />} />
-                <Route path="/document" element={<UserDocumentsPage />} />
-                <Route path="/membership" element={<MembershipPage />} />
-                <Route path="/assembly/list" element={<GeneralAssemblyPage />} /> //page avec la liste des assemblé pour les assignée
-                <Route path="/assembly" element={<GeneralAssemblyForm />} />
-                <Route path="/assemblies/:assemblyId/results" element={<VoteResults />} />
-                <Route path="/admin/assemblies/:assemblyId" element={<AdminAssemblyPage />} />
-                <Route path="/admin/assemblies" element={<AdminAssembliesList />} />//liste assemblé pour admin
-                <Route path="/assemblies/:id" element={<AssemblyPage/>} /> // page qui affiche le contenue de l'assemblée
-                <Route path="/not-authorized" element={<NotAuthorizedPage />} />
-                <Route path="/assemblies/:assemblyId/link-people" element={<LinkPeopleToAssemblyPage />} />
-                <Route path="/user/assemblies" element={
-                    <PrivateRoute>
-                        <UserAssembliesPage />
-                    </PrivateRoute>} />
+            <div>
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/register-location" element={<RegisterLocationPage />} />
+                    <Route path="/donation" element={<DonationPage />} />
+                    <Route path="/groups" element={<CreateGroupPage />} />
+                    <Route path="/groups/document" element={<AssignDocumentPage />} />
+                    <Route path="/donation-success" element={<DonationSuccessPage />} />
+                    <Route path="/membership-success" element={<MembershipSuccessPage />} />
+                    <Route path="/document/upload" element={<UploadDocument />} />
+                    <Route path="/document" element={<UserDocumentsPage />} />
+                    <Route path="/membership" element={<MembershipPage />} />
+                    <Route path="/assembly/list" element={<GeneralAssemblyPage />} /> //page avec la liste des assemblé pour les assignée
+                    <Route path="/assembly" element={<GeneralAssemblyForm />} />
+                    <Route path="/assemblies/:assemblyId/results" element={<VoteResults />} />
+                    <Route path="/admin/assemblies/:assemblyId" element={<AdminAssemblyPage />} />
+                    <Route path="/admin/assemblies" element={<AdminAssembliesList />} />//liste assemblé pour admin
+                    <Route path="/assemblies/:id" element={<AssemblyPage/>} /> // page qui affiche le contenue de l'assemblée
+                    <Route path="/not-authorized" element={<NotAuthorizedPage />} />
+                    <Route path="/assemblies/:assemblyId/link-people" element={<LinkPeopleToAssemblyPage />} />
+                    <Route path="/user/assemblies" element={
+                        <PrivateRoute>
+                            <UserAssembliesPage />
+                        </PrivateRoute>} />
 
-                <Route
-                    path="/user/info"
-                    element={
-                        <PrivateRoute>
-                            <UserInfoPage />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/user/donation"
-                    element={
-                        <PrivateRoute>
-                            <UserDonation />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/user/task"
-                    element={
-                        <PrivateRoute>
-                            <TaskPage />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/user/activity"
-                    element={
-                        <PrivateRoute>
-                            <ActivityPage />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/before-donation"
-                    element={
-                        <PrivateRoute>
-                            <DonationBeforePage />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/before-membership"
-                    element={
-                        <PrivateRoute>
-                            <MembershipBeforePage />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/user/membership"
-                    element={
-                        <PrivateRoute>
-                            <UserMembership />
-                        </PrivateRoute>
-                    }
-                />
-            </Routes>
+                    <Route
+                        path="/user/info"
+                        element={
+                            <PrivateRoute>
+                                <UserInfoPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/user/donation"
+                        element={
+                            <PrivateRoute>
+                                <UserDonation />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/user/task"
+                        element={
+                            <PrivateRoute>
+                                <TaskPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/user/activity"
+                        element={
+                            <PrivateRoute>
+                                <ActivityPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/before-donation"
+                        element={
+                            <PrivateRoute>
+                                <DonationBeforePage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/before-membership"
+                        element={
+                            <PrivateRoute>
+                                <MembershipBeforePage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/user/membership"
+                        element={
+                            <PrivateRoute>
+                                <UserMembership />
+                            </PrivateRoute>
+                        }
+                    />
+                </Routes>
+                <Chatbot />
+            </div>
         </Router>
     );
 }
